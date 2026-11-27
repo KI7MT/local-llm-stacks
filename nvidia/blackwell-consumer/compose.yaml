@@ -1,0 +1,44 @@
+# llama.cpp server for the GeForce Blackwell cards: RTX 5080 (16 GB) and RTX 5090 (32 GB).
+#
+# The two cards share this file. What differs is the model and the context size, which live in
+# .env: copy .env.5080.example or .env.5090.example to .env.
+#
+# Defaults: listens on 127.0.0.1 only, and will not start without LLAMA_API_KEY.
+services:
+  llama:
+    # llama.cpp build b11058 (2026-09-20). Pinned by digest: a tag can move under you.
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda-b11058@sha256:480f67114291c698d2b13097e0e3efdd57e81aa3a9de6720564c307663868a59
+    container_name: llama
+    restart: unless-stopped
+    ports:
+      - "${BIND:-127.0.0.1}:${PORT:-8080}:8080"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+      # Read by llama-server from the environment, so the key never appears on a command line.
+      LLAMA_API_KEY: ${LLAMA_API_KEY:?set LLAMA_API_KEY in .env}
+    volumes:
+      - ${MODEL_DIR:?set MODEL_DIR in .env}:/models:ro
+    command: >
+      --model /models/${MODEL_FILE:?set MODEL_FILE in .env}
+      --host 0.0.0.0
+      --port 8080
+      --n-gpu-layers 999
+      --ctx-size ${CTX:-32768}
+      --batch-size 512
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --flash-attn on
+      --jinja
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 300s
+      retries: 3

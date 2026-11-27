@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- LaunchAgent for start.sh. __HOME__ is replaced at install (see README.md). -->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>local.mlx-server</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>__HOME__/.local/share/mlx-server/start.sh</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>MLX_MODEL</key>
+        <string>mlx-community/Qwen3-Coder-Next-4bit</string>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/mlx-server.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/mlx-server.err.log</string>
+</dict>
+</plist>

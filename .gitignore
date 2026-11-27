@@ -1,0 +1,13 @@
+# Real environment files hold the API key. Only the *.example files are committed.
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Model weights are downloaded, never committed.
+models/
+*.gguf
+*.safetensors
+
+.venv/
+__pycache__/
