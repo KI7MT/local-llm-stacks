@@ -3,6 +3,9 @@
 Done once per machine, whichever card it has. The lab runs Rocky Linux; the steps are the same on
 any distribution with packages for the three pieces below.
 
+**On Rocky Linux 9** (or another RHEL 9 rebuild), the driver install with the lab's notes on what
+went wrong is in [`rocky-9/`](rocky-9/README.md). Do that first, then steps 2 and 3 below.
+
 ## 1. Driver
 
 All three cards here are Blackwell (GB20x), CUDA compute capability **12.0** (`sm_120`): the

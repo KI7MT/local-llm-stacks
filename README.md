@@ -19,6 +19,7 @@ changed base URL.
 
 ```
 nvidia/                      host setup shared by every NVIDIA variant
+  rocky-9/                   building Rocky Linux 9 for Blackwell: driver, DKMS, the pitfalls
   blackwell-consumer/        RTX 5080 and RTX 5090: one Compose file, an .env per card
   rtx-pro-6000/              RTX PRO 6000 Blackwell 96 GB
 macos/
@@ -32,7 +33,7 @@ docs/
 ## Quick start (NVIDIA)
 
 1. Prepare the host once: [`nvidia/README.md`](nvidia/README.md) (driver, NVIDIA Container
-   Toolkit, Docker Compose).
+   Toolkit, Docker Compose); on Rocky Linux 9, start with [`nvidia/rocky-9/`](nvidia/rocky-9/README.md).
 2. Pick your card's directory, copy its `.env` example, download the model it names, set a key:
 
    ```bash
