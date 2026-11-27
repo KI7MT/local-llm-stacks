@@ -46,6 +46,59 @@ docs/
 On a Mac, Docker cannot reach the GPU (Metal), so the Apple Silicon stack runs natively:
 [`macos/apple-silicon-mlx/README.md`](macos/apple-silicon-mlx/README.md).
 
+## Models by hardware and task
+
+Starting points, not a leaderboard. **Run** means the lab served it on that hardware; **measured**
+means numbers are in [`docs/measured.md`](docs/measured.md); **suggested** means it fits by size
+(file sizes from the download pages) and has not been run here yet. Every GGUF listed loads in the
+pinned llama.cpp build.
+
+Most current models think before answering (gpt-oss, Qwen3.5 and later, the R1 distills); they
+are listed under reasoning when that is their strength, but they code too.
+
+### RTX 5080, 16 GB
+
+| Task | Model | File | Size | Status |
+|---|---|---|---|---|
+| General | Qwen2.5-14B-Instruct | `bartowski/Qwen2.5-14B-Instruct-GGUF` Q5_K_M | 10.5 GB | run |
+| Reasoning | gpt-oss-20b | `ggml-org/gpt-oss-20b-GGUF` MXFP4 | 12.1 GB | suggested |
+| Coding | Qwen3.5-9B | `unsloth/Qwen3.5-9B-GGUF` Q8_0 | 9.5 GB | suggested |
+
+### RTX 5090, 32 GB
+
+| Task | Model | File | Size | Status |
+|---|---|---|---|---|
+| Coding | Qwen3.6-35B-A3B | `unsloth/Qwen3.6-35B-A3B-GGUF` UD-Q4_K_M | 22.1 GB | suggested |
+| Coding | Qwen3-Coder-30B-A3B-Instruct | `unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF` Q4_K_M | 18.6 GB | suggested |
+| Reasoning, general | Qwen3.8-27B | `unsloth/Qwen3.8-27B-GGUF` UD-Q5_K_M | 19.8 GB | suggested |
+| Reasoning | gpt-oss-20b, full 131k context | `ggml-org/gpt-oss-20b-GGUF` MXFP4 | 12.1 GB | suggested |
+
+### RTX PRO 6000 Blackwell, 96 GB
+
+| Task | Model | File | Size | Status |
+|---|---|---|---|---|
+| Coding, reasoning | gpt-oss-120b | `unsloth/gpt-oss-120b-GGUF` F16 (MXFP4 experts) | 65 GB | measured: passed the coding task in 95 s, 194 tok/s |
+| Coding | Qwen3.8-Flash-Next | `unsloth/Qwen3.8-Flash-Next-GGUF` UD-Q3_K_XL | 89 GB in 4 files * | measured: the cleanest code, 112 tok/s |
+| Reasoning | Qwen3.5-122B-A10B | `unsloth/Qwen3.5-122B-A10B-GGUF` UD-Q4_K_XL | 77 GB in 3 files | measured: 119 tok/s |
+| General | Llama-3.3-70B-Instruct | Q5_K_M | about 50 GB | run |
+| Astronomy | AstroSage-70B | Q5_K_M | 50.4 GB | measured: about 30 tok/s |
+
+\* Qwen3.8-Flash-Next keeps part of its weights (an n-gram embedding) in system RAM under
+llama.cpp, so it used 61 GiB of GPU memory at 131k context despite the file size. Give the host
+plenty of RAM.
+
+### Apple M3 Ultra, 96 GB unified (MLX)
+
+| Task | Model | Hugging Face | On disk | Status |
+|---|---|---|---|---|
+| Coding | Qwen3-Coder-Next | `mlx-community/Qwen3-Coder-Next-4bit` | 42 GB | run |
+| Coding | Qwen3.6-35B-A3B | `unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit` | 21.6 GB | suggested |
+| Reasoning | DeepSeek-R1-Distill-Llama-70B | `mlx-community/DeepSeek-R1-Distill-Llama-70B-4bit` | 37 GB | run |
+| General | Qwen2.5-72B-Instruct | `mlx-community/Qwen2.5-72B-Instruct-4bit` | 38 GB | run |
+
+Check the license on each model's page before you use it; they differ, and some restrict
+commercial use.
+
 ## Defaults that matter
 
 - **Listens on `127.0.0.1` only** and **requires an API key.** Opening it to a LAN is a deliberate
